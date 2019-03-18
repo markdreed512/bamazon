@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
+    // console.log("connected as id " + connection.threadId + "\n");
 });
 
 var query = "SELECT * FROM products";
@@ -43,7 +43,7 @@ function runInquirer() {
                 console.log("insufficient Quantity!\n");
                 runInquirer();
             } else {
-                updateDb(availStock, unitsPurchased, inputId)
+                updateDb(availStock, unitsPurchased, inputId);
             }
 
 
@@ -55,16 +55,17 @@ function runInquirer() {
     })
 }
 function updateDb(avail, purchased, id) {
+    var quant = avail - purchased;
     connection.query("UPDATE products SET ? WHERE ?",
         [
             {
-                stock_quantity: avail - purchased
+                stock_quantity: parseFloat(quant.toFixed(2))
             },
             {
                 item_id: id
             }
         ], function (err, res) {
-
+            
         });
     displayTotalCost(id ,purchased);
     connection.end();
@@ -73,7 +74,8 @@ function updateDb(avail, purchased, id) {
 function displayTotalCost(itemId, num){
     connection.query("SELECT * FROM products", function(err, result){
         //cost = num * item price
-        var cost = num * result[itemId - 1].price;
-        console.log("Total Cost: $", cost)
+        var cost = num * result[itemId - 1].price.toFixed(2);
+        console.log("Total Cost: $"+ parseFloat(cost));
+        console.log("Thanks for purchasing "+ result[itemId - 1].product_name +  " on Bamazon!!")
     })
 }

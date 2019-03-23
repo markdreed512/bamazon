@@ -84,8 +84,8 @@ function addToInventory(result) {
 function addMore(answers, result) {
     var quantity = answers.addQuantity;
     var totalQuant = 0;
-    for(var i = 0; i < result.length; i++){
-        if(result[i].product_name === answers.addItem){
+    for (var i = 0; i < result.length; i++) {
+        if (result[i].product_name === answers.addItem) {
             totalQuant = parseInt(result[i].stock_quantity) + parseInt(quantity);
         }
     };
@@ -120,7 +120,7 @@ function addNewProduct(result) {
         {
             name: "addNewDept",
             type: "input",
-            message: "What departement would you like this listed under?"
+            message: "What department would you like this listed under?"
         },
         {
             name: "addNewPrice",
@@ -138,21 +138,20 @@ function addNewProduct(result) {
     })
 }
 function insertNewProduct(answers) {
-    console.log("answers: ", answers)
-    console.log("query: ", "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (" + answers.addnewItem + ", " + answers.addNewDept + ", " + answers.addNewPrice + ", " + answers.addNewQuantity + ")",
-    )
     connection.query(
-        // "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (" + answers.addnewItem + ", " + answers.addNewDept + ", " + answers.addNewPrice + ", " + answers.addNewQuantity + ")",
-        
+        // "UPDATE products SET stock_quantity = ? WHERE product_name = ?",
+        // [
+        //     parseInt(totalQuant), item
+        // ]
+        "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (\"" + answers.addNewItem + "\", \"" + answers.addNewDept + "\", \" " + parseFloat(answers.addNewPrice) + "\", \" " + parseInt(answers.addNewQuantity) + "\")",
         function (err, res) {
-            console.log("res: ", res)
-            console.log(res.affectedRows + " product inserted!\n");
+            console.log("\n" +  res.affectedRows + " product inserted!\n");
 
         }
     );
+    menu();
 }
-
-function exit(answers){
+function exit(answers) {
     console.log("Goodbye!!")
     connection.end()
 }
